@@ -27,3 +27,11 @@ O sistema conta com um fluxo de autenticação via senha (3589) e oferece as seg
 * **Segurança:** Operações financeiras só podem ser acessadas após a validação da senha.
 * **Validação de Dados:** O sistema verifica se o usuário digitou números válidos (evitando erros com campos vazios ou letras).
 * **Saldo Protegido:** Não é permitido realizar saques ou transferências que excedam o saldo disponível.
+
+## Autor
+
+<div>
+  <a href="https://github.com/christianwl">
+    <img src="https://contrib.rocks/image?repo=christianwl/caixa-eletronico" alt="Autor do Portfolio"/>
+  </a>
+</div>
