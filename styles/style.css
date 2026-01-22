@@ -1,0 +1,36 @@
+@import 'reset.css';
+
+body {
+    display: flex;
+    flex-direction: column;
+
+    color: #F4F4F4;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+main button {
+    background-color: transparent;
+    border: 2px solid #F4F4F4;
+    border-radius: 20px;
+    padding-block: 16px;
+    padding-inline: 12px;
+
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out; 
+}
+
+main button:hover{
+    background-color: rgb(32, 32, 32);
+    transform: scale(1.01); 
+}
+
+footer {
+    text-align: center; 
+    padding-block: 24px;
+}
