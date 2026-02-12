@@ -16,13 +16,16 @@ function receberUsuario() {
   return nome;
 }
 
-export function startMenu() {
-  if (nomeDoUsuario == "") nomeDoUsuario = receberUsuario();
+export function start() {
+  nomeDoUsuario = receberUsuario();
   if (nomeDoUsuario == null) {
     alert("Programa encerrado antecipadamente");
     return;
   }
+  startMenu();
+}
 
+function startMenu() {
   let textoEscolha = "Seleciona uma opção";
   let listaIndices = [];
 
