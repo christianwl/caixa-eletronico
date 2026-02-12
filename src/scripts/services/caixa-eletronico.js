@@ -8,7 +8,7 @@ let saldo = 100.5; //Float
 let textoExtrato = "";
 let nomeDoUsuario = "";
 
-export function receberUsuario() {
+function receberUsuario() {
   let nome = receberString("Por favor, digite o seu nome:");
   if (nome != null) {
     alert(`Olá ${nome} é um prazer ter você por aqui!`);
@@ -16,8 +16,12 @@ export function receberUsuario() {
   return nome;
 }
 
-export function startMenu(nome = "") {
-  nomeDoUsuario = nome;
+export function startMenu() {
+  nomeDoUsuario = receberUsuario();
+  if (nomeDoUsuario == null) {
+    alert("Programa encerrado antecipadamente");
+    return;
+  }
 
   let textoEscolha = "Seleciona uma opção";
   let listaEscolhas = ["Saldo", "Extrato", "Saque", "Depósito", "Tranferência"];
@@ -51,7 +55,7 @@ export function startMenu(nome = "") {
         fazerTransferencia(true);
         break;
       default:
-        erro();
+        return;
     }
   }
 }
@@ -74,7 +78,6 @@ function successfulLogin() {
 
 function verSaldo() {
   alert("Seu saldo atual é: " + saldo);
-  start();
 }
 
 function fazerDeposito() {
@@ -111,7 +114,6 @@ function fazerSaque() {
     }
   } else {
     alert("Seu saldo está em 0, não é possível realizar o saque!");
-    start();
   }
 }
 
@@ -120,7 +122,6 @@ function mostrarExtrato() {
     "Bolo de cenoura: -R$20.50\n\nRefrigerante: -R$8.00\n\nRecarga do Celular: -R$25.00" +
       textoExtrato,
   );
-  start();
 }
 
 function fazerTransferencia(verifica) {
@@ -150,13 +151,7 @@ function fazerTransferencia(verifica) {
     }
   } else {
     alert("Seu saldo está em 0, não é possível realizar o saque!");
-    start();
   }
-}
-
-function erro(escolha) {
-  alert("Por favor, informe um número entre 1 e 6");
-  start();
 }
 
 function naoAutorizado() {
