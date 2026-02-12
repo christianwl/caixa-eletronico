@@ -17,46 +17,37 @@ function receberUsuario() {
 }
 
 export function startMenu() {
-  nomeDoUsuario = receberUsuario();
+  if (nomeDoUsuario == "") nomeDoUsuario = receberUsuario();
   if (nomeDoUsuario == null) {
     alert("Programa encerrado antecipadamente");
     return;
   }
 
   let textoEscolha = "Seleciona uma opção";
-  let listaEscolhas = ["Saldo", "Extrato", "Saque", "Depósito", "Tranferência"];
   let listaIndices = [];
 
-  for (let i = 0; i <= listaEscolhas.length; i++) {
-    let ultimoIndice = !(i < listaEscolhas.length);
-    textoEscolha += `\n\n${ultimoIndice ? "0" : i + 1}.) ${ultimoIndice ? "Sair" : listaEscolhas[i]}`;
-    listaIndices.push(i);
-  }
+  const opcoes = [
+    { nome: "Saldo", acao: verSaldo },
+    { nome: "Depósito", acao: fazerDeposito },
+    { nome: "Saque", acao: fazerSaque },
+    { nome: "Extrato", acao: mostrarExtrato },
+    { nome: "Transferência", acao: fazerTransferencia },
+  ];
+
+  opcoes.forEach((opt, i) => {
+    textoEscolha += `\n\n${i + 1}.) ${opt.nome}`;
+    listaIndices.push(i + 1);
+  });
+
+  textoEscolha += "\n\n0.) Sair";
+  listaIndices.push(0);
 
   let escolha = receberNumeroEspecifico(textoEscolha, listaIndices);
   if (escolha == null) return;
   if (escolha == 0) return sair();
 
   if (successfulLogin()) {
-    switch (escolha) {
-      case 1:
-        verSaldo();
-        break;
-      case 2:
-        fazerDeposito();
-        break;
-      case 3:
-        fazerSaque();
-        break;
-      case 4:
-        mostrarExtrato();
-        break;
-      case 5:
-        fazerTransferencia(true);
-        break;
-      default:
-        return;
-    }
+    opcoes[escolha - 1].acao();
   }
 }
 
@@ -78,6 +69,7 @@ function successfulLogin() {
 
 function verSaldo() {
   alert("Seu saldo atual é: " + saldo);
+  startMenu();
 }
 
 function fazerDeposito() {
@@ -114,6 +106,7 @@ function fazerSaque() {
     }
   } else {
     alert("Seu saldo está em 0, não é possível realizar o saque!");
+    startMenu();
   }
 }
 
@@ -122,9 +115,10 @@ function mostrarExtrato() {
     "Bolo de cenoura: -R$20.50\n\nRefrigerante: -R$8.00\n\nRecarga do Celular: -R$25.00" +
       textoExtrato,
   );
+  startMenu();
 }
 
-function fazerTransferencia(verifica) {
+function fazerTransferencia(verifica = true) {
   if (saldo > 0) {
     let numeroConta = parseInt(
       prompt("Digite o número da conta para qual você deseja transferir: "),
@@ -151,6 +145,7 @@ function fazerTransferencia(verifica) {
     }
   } else {
     alert("Seu saldo está em 0, não é possível realizar o saque!");
+    startMenu();
   }
 }
 
