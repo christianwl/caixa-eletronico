@@ -1,23 +1,23 @@
-var saldo = 100.5; //Float
-var textoExtrato = "";
-var nomeDoUsuario = "";
+let saldo = 100.5; //Float
+let textoExtrato = "";
+let nomeDoUsuario = "";
 
 function ReceberUsuario() {
-  var nome = prompt("Por favor, digite o seu nome: ");
+  let nome = prompt("Por favor, digite o seu nome: ");
   alert(`Olá ${nomeDoUsuario} é um prazer ter você por aqui!`);
   return nome;
 }
 
 function inicio() {
-  var escolha = parseInt(
+  let escolha = parseInt(
     prompt(
       "Selecione uma opção \n\n1.) Saldo \n\n2.) Extrato \n\n3.) Saque \n\n4.) Depósito \n\n5.) Transferência \n\n6.) Sair",
     ),
   );
-  var podeRealizarOperacao = false;
+  let podeRealizarOperacao = false;
 
   if (escolha != 6) {
-    var senha = prompt("Digite sua senha: ");
+    let senha = prompt("Digite sua senha: ");
     if (senha != 3589) {
       alert("Senha incorreta");
     } else {
@@ -59,7 +59,7 @@ function ver_saldo() {
 }
 
 function fazer_deposito() {
-  var deposito = parseFloat(prompt("Qual o valor para depósito?"));
+  let deposito = parseFloat(prompt("Qual o valor para depósito?"));
   // Not a Number
   if (isNaN(deposito) || deposito === "") {
     alert("Por favor, informe um número:");
@@ -78,7 +78,7 @@ function fazer_deposito() {
 
 function fazer_saque() {
   if (saldo > 0) {
-    var saque = parseFloat(prompt("Qual o valor para saque?"));
+    let saque = parseFloat(prompt("Qual o valor para saque?"));
     if (isNaN(saque) || saque === "") {
       alert("Por favor, informe um número:");
       fazer_saque();
@@ -106,7 +106,7 @@ function mostrar_extrato() {
 
 function fazer_transferencia(verifica) {
   if (saldo > 0) {
-    var numeroConta = parseInt(
+    let numeroConta = parseInt(
       prompt("Digite o número da conta para qual você deseja transferir: "),
     );
 
@@ -114,9 +114,9 @@ function fazer_transferencia(verifica) {
       alert("Por favor, informe um número:");
       fazer_transferencia();
     } else {
-      var podeTransferir = false;
+      let podeTransferir = false;
       do {
-        var valor = Number(prompt("Digite o valor a ser transferido: "));
+        let valor = Number(prompt("Digite o valor a ser transferido: "));
         if (isNaN(valor) || valor === "") {
           alert("Por favor, informe um número:");
         } else if (valor > saldo || valor <= 0) {
@@ -145,7 +145,7 @@ function nao_autorizado() {
 }
 
 function sair() {
-  var confirma = confirm("Você deseja sair?");
+  let confirma = confirm("Você deseja sair?");
   if (confirma) {
     alert(
       "Obrigado por utilizar os serviços do nosso banco: " +
@@ -158,9 +158,9 @@ function sair() {
   }
 }
 
-const btnIniciar = document.getElementById('btn-iniciar');
+const btnIniciar = document.getElementById("btn-iniciar");
 
-btnIniciar.addEventListener('click', function () {
+btnIniciar.addEventListener("click", function () {
   nomeDoUsuario = ReceberUsuario();
-	inicio();
-})
+  inicio();
+});
