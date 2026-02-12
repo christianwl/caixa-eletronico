@@ -158,7 +158,9 @@ function sair() {
   }
 }
 
-function iniciarCaixaEletronico(){
-	nomeDoUsuario = ReceberUsuario();
+const btnIniciar = document.getElementById('btn-iniciar');
+
+btnIniciar.addEventListener('click', function () {
+  nomeDoUsuario = ReceberUsuario();
 	inicio();
-}
+})
