@@ -2,23 +2,50 @@ import {
   receberNumeroEspecifico,
   receberString,
   receberValorNumerico,
+  receberValorPositivo,
 } from "../utils/functions.js";
 
-let saldo = 100.5; //Float
-let textoExtrato = "";
-let nomeDoUsuario = "";
+// Saldo da conta
+let balance = 100.5;
 
-function receberUsuario() {
-  let nome = receberString("Por favor, digite o seu nome:");
-  if (nome != null) {
-    alert(`Olá ${nome} é um prazer ter você por aqui!`);
+let statementText = "===Extrato===";
+let userName = "";
+
+const ERRORS = {
+  UNAUTHORIZED: "Operação não autorizada.",
+};
+
+const DEFAULT_STATEMENT = [
+  { type: "Bolo de cenora", value: 20.5, isPositive: false },
+  { type: "Refrigerante", value: 8.0, isPositive: false },
+  { type: "Recarga de Celular", value: 25.0, isPositive: false },
+];
+
+DEFAULT_STATEMENT.forEach((transaction) => addStatement(transaction));
+
+/**
+ * Adiciona uma transação formatada ao histórico do extrato.
+ * * @param {Object} transaction - Objeto que descreve a transação
+ * @param {string} transaction.type - O nome da transação (Ex: 'Saque', 'Depósito', 'Transferência')
+ * @param {number} transaction.value - O valor monetário da operação
+ * @param {boolean} [transaction.isPositive=true] - Define se a operação soma (+) ou subtrai (-) do saldo
+ */
+function addStatement({ type, value, isPositive = true }) {
+  const symbol = isPositive ? "+" : "-";
+  statementText += `\n\n${type}: \n${symbol}R$${value.toFixed(2)}\n---------------------`;
+}
+
+function requestUserName() {
+  let name = receberString("Por favor, digite o seu nome:");
+  if (name != null) {
+    alert(`Olá ${name} é um prazer ter você por aqui!`);
   }
-  return nome;
+  return name;
 }
 
 export function start() {
-  nomeDoUsuario = receberUsuario();
-  if (nomeDoUsuario == null) {
+  userName = requestUserName();
+  if (userName == null) {
     alert("Programa encerrado antecipadamente");
     return;
   }
@@ -26,145 +53,137 @@ export function start() {
 }
 
 function startMenu() {
-  let textoEscolha = "Seleciona uma opção";
-  let listaIndices = [];
+  let choiceText = "Seleciona uma opção";
+  let indexList = [];
 
-  const opcoes = [
-    { nome: "Saldo", acao: verSaldo },
-    { nome: "Depósito", acao: fazerDeposito },
-    { nome: "Saque", acao: fazerSaque },
-    { nome: "Extrato", acao: mostrarExtrato },
-    { nome: "Transferência", acao: fazerTransferencia },
+  const options = [
+    { name: "Saldo", action: getBalance },
+    { name: "Depósito", action: makeDeposit },
+    { name: "Saque", action: withdraw },
+    { name: "Extrato", action: viewStatement },
+    { name: "Transferência", action: transfer },
   ];
 
-  opcoes.forEach((opt, i) => {
-    textoEscolha += `\n\n${i + 1}.) ${opt.nome}`;
-    listaIndices.push(i + 1);
+  options.forEach((opt, i) => {
+    choiceText += `\n\n${i + 1}.) ${opt.name}`;
+    indexList.push(i + 1);
   });
 
-  textoEscolha += "\n\n0.) Sair";
-  listaIndices.push(0);
+  choiceText += "\n\n0.) Sair";
+  indexList.push(0);
 
-  let escolha = receberNumeroEspecifico(textoEscolha, listaIndices);
-  if (escolha == null) return;
-  if (escolha == 0) return sair();
+  let choice = receberNumeroEspecifico(choiceText, indexList);
+  if (choice == null) return;
+  if (choice == 0) return exit();
 
   if (successfulLogin()) {
-    opcoes[escolha - 1].acao();
+    options[choice - 1].action();
   }
 }
 
 function successfulLogin() {
-  let correctPassword = 3589;
-  let senha = receberValorNumerico(
+  const CORRECT_PASSWORD = 3589;
+  let userPassword = receberValorNumerico(
     "Digite sua senha: \n\nOBS: A senha contém apenas 4 números!",
   );
 
-  if (senha != correctPassword) {
+  if (userPassword != CORRECT_PASSWORD) {
     alert("Senha incorreta\n\nPrograma será encerrado!");
     alert("Dica: Tente ver o console do navegador na próxima tentativa!");
-    console.log(`A senha correta é: ${correctPassword}!`);
+    console.log(`A senha correta é: ${CORRECT_PASSWORD}!`);
     return false;
   }
 
   return true;
 }
 
-function verSaldo() {
-  alert("Seu saldo atual é: " + saldo);
+function getBalance() {
+  alert("Seu saldo atual é: " + balance);
   startMenu();
 }
 
-function fazerDeposito() {
-  let deposito = parseFloat(prompt("Qual o valor para depósito?"));
-  // Not a Number
-  if (isNaN(deposito) || deposito === "") {
-    alert("Por favor, informe um número:");
-    fazerDeposito();
-  } else {
-    if (deposito <= 0) {
-      naoAutorizado();
-      fazerDeposito();
-    } else {
-      saldo += deposito;
-      textoExtrato += "\n\nDeposito: +R$" + deposito.toFixed(2);
-      verSaldo();
-    }
-  }
-}
-
-function fazerSaque() {
-  if (saldo > 0) {
-    let saque = parseFloat(prompt("Qual o valor para saque?"));
-    if (isNaN(saque) || saque === "") {
-      alert("Por favor, informe um número:");
-      fazerSaque();
-    } else if (saque > saldo || saque <= 0) {
-      naoAutorizado();
-      fazerSaque();
-    } else {
-      saldo -= saque;
-      textoExtrato += "\n\nSaque: -R$" + saque.toFixed(2);
-      verSaldo();
-    }
-  } else {
-    alert("Seu saldo está em 0, não é possível realizar o saque!");
-    startMenu();
-  }
-}
-
-function mostrarExtrato() {
-  apresentar_alert(
-    "Bolo de cenoura: -R$20.50\n\nRefrigerante: -R$8.00\n\nRecarga do Celular: -R$25.00" +
-      textoExtrato,
+function makeDeposit() {
+  let deposit = receberValorPositivo(
+    "Qual o valor para depósito?",
+    ERRORS.UNAUTHORIZED,
   );
-  startMenu();
+
+  if (deposit === null) return startMenu();
+
+  balance += deposit;
+  addStatement({ type: "Depósito", value: deposit, isPositive: true });
+  getBalance();
 }
 
-function fazerTransferencia(verifica = true) {
-  if (saldo > 0) {
-    let numeroConta = parseInt(
-      prompt("Digite o número da conta para qual você deseja transferir: "),
-    );
+function getAllowableValue(textPrompt) {
+  let value = 0.0;
+  let unacceptableValue = false;
+  do {
+    value = receberValorPositivo(textPrompt, ERRORS.UNAUTHORIZED);
 
-    if (isNaN(numeroConta) || (numeroConta === "" && verifica)) {
-      alert("Por favor, informe um número:");
-      fazerTransferencia();
-    } else {
-      let podeTransferir = false;
-      do {
-        let valor = Number(prompt("Digite o valor a ser transferido: "));
-        if (isNaN(valor) || valor === "") {
-          alert("Por favor, informe um número:");
-        } else if (valor > saldo || valor <= 0) {
-          naoAutorizado();
-        } else {
-          saldo -= valor;
-          textoExtrato += "\n\nTransferência: -R$" + valor.toFixed(2);
-          podeTransferir = true;
-          verSaldo();
-        }
-      } while (!podeTransferir);
+    if (value === null) return null;
+
+    unacceptableValue = value > balance;
+
+    if (unacceptableValue) {
+      alert("Saldo insuficiente!\nTente novamente");
     }
+  } while (unacceptableValue);
+
+  return value;
+}
+
+function withdraw() {
+  if (balance <= 0) {
+    alert("Seu saldo está em R$0, não é possível realizar o saque!");
+    return startMenu();
   } else {
-    alert("Seu saldo está em 0, não é possível realizar o saque!");
-    startMenu();
+    let withdrawValue = getAllowableValue("Qual o valor para saque?");
+    if (withdrawValue === null) return startMenu();
+
+    balance -= withdrawValue;
+    addStatement({ type: "Saque", value: withdrawValue, isPositive: false });
+    getBalance();
   }
 }
 
-function naoAutorizado() {
-  alert("Operação não autorizada");
+function viewStatement() {
+  alert(statementText);
+  startMenu();
 }
 
-function sair() {
-  let confirma = confirm("Você deseja sair?");
-  if (confirma) {
+function transfer() {
+  if (balance <= 0) {
+    alert("Seu saldo está em R$0, não é possível realizar a transferência!");
+    return startMenu();
+  } else {
+    let accountNumber = receberValorNumerico(
+      "Digite o número da conta para qual você deseja transferir: ",
+    );
+    if (accountNumber === null) return startMenu();
+
+    let transferValue = getAllowableValue("Digite o valor a ser transferido: ");
+    if (transferValue === null) return startMenu();
+
+    balance -= transferValue;
+    addStatement({
+      type: `Transferência para conta ${accountNumber}`,
+      value: transferValue,
+      isPositive: false,
+    });
+    getBalance();
+  }
+}
+
+function exit() {
+  let isConfirm = confirm("Você deseja sair?");
+  if (isConfirm) {
     alert(
       "Obrigado por utilizar os serviços do nosso banco: " +
-        nomeDoUsuario +
-        ", foi um prazer ter você por aqui.",
+        userName +
+        "\nFoi um prazer ter você por aqui.",
     );
-    window.close();
+    // window.close();
   } else {
     startMenu();
   }
