@@ -3,7 +3,7 @@ import {
   receberString,
   receberValorNumerico,
   receberValorPositivo,
-} from "../utils/functions.js";
+} from "../utils/prompt-manager.js";
 
 // Saldo da conta
 let balance = 100.5;
